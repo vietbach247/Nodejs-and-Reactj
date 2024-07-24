@@ -4,6 +4,7 @@ import { AiOutlineCheck } from "react-icons/ai";
 import { MdOutlineError } from "react-icons/md";
 import axios from "axios";
 import { Typography, Spin, Button, Tooltip } from "antd";
+import constants from "../../sever";
 
 const { Title, Paragraph } = Typography;
 
@@ -17,11 +18,15 @@ const ConfirmEmail: React.FC = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await axios.get(`/api/auth/confirm-email/${token}`);
+        console.log("Verifying token:", token);
+        const response = await constants.get(`/auth/confirm-email/${token}`);
+        console.log("Response from server:", response.data);
         setMessage(response.data.message);
         setSuccess(true);
       } catch (error: any) {
+        console.error("Error in verifyEmail:", error);
         if (axios.isAxiosError(error) && error.response) {
+          console.log("Error response from server:", error.response.data);
           setMessage(error.response.data.message || "Có lỗi xảy ra");
         } else {
           setMessage("Có lỗi xảy ra");
@@ -42,7 +47,7 @@ const ConfirmEmail: React.FC = () => {
       ) : (
         <div>
           <Paragraph>{message}</Paragraph>
-          {success && (
+          {success ? (
             <div>
               <div className="flex items-center justify-center p-4">
                 <div className="flex items-center justify-center w-16 h-16 rounded-full bg-blue-500">
@@ -51,7 +56,6 @@ const ConfirmEmail: React.FC = () => {
                   />
                 </div>
               </div>
-
               <Title level={2}>
                 Chúc mừng bạn đã xác thực tài khoản thành công!
               </Title>
@@ -59,8 +63,7 @@ const ConfirmEmail: React.FC = () => {
                 Đăng nhập
               </Button>
             </div>
-          )}
-          {!success && (
+          ) : (
             <div>
               <div className="flex items-center justify-center p-4 relative">
                 <div className="absolute w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-b-16 border-b-blue-500"></div>
@@ -72,7 +75,6 @@ const ConfirmEmail: React.FC = () => {
                   </div>
                 </Tooltip>
               </div>
-
               <Title level={2}>
                 Rất tiếc tài khoản của bạn không được xác thực. Vui lòng kiểm
                 tra lại email hoặc đăng ký!

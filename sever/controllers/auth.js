@@ -70,6 +70,7 @@ export const Register = async (req, res, next) => {
 
     newUser.password = undefined;
 
+    // Tạo nội dung email xác thực
     const mailOptions = {
       to: newUser.email,
       from: process.env.EMAIL_USER,
@@ -81,6 +82,7 @@ export const Register = async (req, res, next) => {
              <p>Trân trọng,</p>
              <p>Đội ngũ hỗ trợ</p>`,
     };
+
     // Gửi email xác thực
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
