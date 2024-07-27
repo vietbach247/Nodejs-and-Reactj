@@ -1,15 +1,15 @@
 import { Router } from "express";
 import {
-  addToFavorite,
+  createFavorites,
+  deleteFavorite,
   getFavorites,
-  removeFromFavorite,
 } from "../controllers/favorite";
 import { authentication } from "../middleware/authentication";
 
 const favoriteRouter = Router();
 
-favoriteRouter.post("/", authentication, addToFavorite);
-favoriteRouter.delete("/", authentication, removeFromFavorite);
+favoriteRouter.post("/", authentication, createFavorites);
 favoriteRouter.get("/", authentication, getFavorites);
+favoriteRouter.delete("/", authentication, deleteFavorite);
 
 export default favoriteRouter;

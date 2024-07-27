@@ -19,6 +19,7 @@ export interface Movie {
   trailerId: string;
   year: number;
   price: number;
+  favoriteCount?: number;
   category?: Category[] | string[];
   country?: Country[] | string[];
 }

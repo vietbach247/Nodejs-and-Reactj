@@ -11,6 +11,6 @@ router.use("/movie", movieRouter);
 router.use("/country", routerCountry);
 router.use("/category", categoryRouter);
 router.use("/auth", authRouter);
-router.use("/favorite", favoriteRouter);
+router.use("/favorites", favoriteRouter);
 
 export default router;

@@ -1,13 +1,48 @@
-// src/components/TCard.tsx
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Movie } from "../../interfaces/Movie";
 import { PlayCircleOutlined } from "@ant-design/icons";
+import { message } from "antd";
+import constants from "../../sever";
 
 type Props = {
   props: Movie;
 };
 
 const TCard: FC<Props> = ({ props }) => {
+  const [loading, setLoading] = useState(false);
+
+  const addToFavorites = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        message.error("Vui lòng đăng nhập");
+        setLoading(false);
+        return;
+      }
+
+      const response = await constants.post(
+        "/favorites",
+        { movieId: props._id }, // Gửi movieId cùng với yêu cầu
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.status === 201) {
+        message.success("Đã thêm vào danh sách yêu thích");
+      } else {
+        message.error(
+          response.data.message || "Lỗi khi thêm vào danh sách yêu thích"
+        );
+      }
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+      message.error("Lỗi khi thêm vào danh sách yêu thích");
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col h-full">
       <img
@@ -28,9 +63,13 @@ const TCard: FC<Props> = ({ props }) => {
           <strong>Giá:</strong> ${props.price}
         </p>
         <div className="mt-auto">
-          <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center">
+          <button
+            className="bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center"
+            onClick={addToFavorites}
+            disabled={loading}
+          >
             <PlayCircleOutlined className="mr-2" />
-            Xem chi tiết
+            Thêm vào yêu thích
           </button>
         </div>
       </div>

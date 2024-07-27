@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Movie } from "../../interfaces/Movie";
 import { Link, useNavigate } from "react-router-dom";
 import constants from "../../sever";
-import { Button, Space, Table, Tag, notification } from "antd";
+import { AutoComplete, Button, Space, Table, Tag, notification } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Category } from "../../interfaces/Category";
 import { Country } from "../../interfaces/Country";
@@ -12,12 +12,14 @@ type Props = {};
 const Dashboard = (props: Props) => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [options, setOptions] = useState<{ value: string }[]>([]);
 
   // Effect to fetch movies data from API
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchMovies = async (query: string = "") => {
       try {
-        const movieResponse = await constants.get("/movie", {});
+        const movieResponse = await constants.get(`/movie${query}`);
         const movieData = movieResponse.data.data;
         if (Array.isArray(movieData)) {
           setMovies(movieData);
@@ -32,8 +34,9 @@ const Dashboard = (props: Props) => {
       }
     };
 
-    fetchData();
-  }, []);
+    const query = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : "";
+    fetchMovies(query);
+  }, [searchTerm]);
 
   // Function to handle movie removal
   const handleRemove = async (id: string | undefined) => {
@@ -147,14 +150,43 @@ const Dashboard = (props: Props) => {
     },
   ];
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    if (!value) {
+      setOptions([]);
+      return;
+    }
+
+    // Optional: Update `options` based on search value if needed
+    const filteredOptions = movies
+      .filter((movie) => movie.name.toLowerCase().includes(value.toLowerCase()))
+      .map((movie) => ({ value: movie.name }));
+    setOptions(filteredOptions);
+  };
+
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
-      <h1>Danh sách phim</h1>
-      <Space direction="vertical" style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={() => navigate("create-movie")}>
+      <h1 className="text-2xl font-bold mb-4">Danh sách phim</h1>
+      <div className="mb-4 flex flex-col sm:flex-row items-center">
+        <Button
+          type="primary"
+          className="mt-4 sm:mt-0 sm:ml-4"
+          onClick={() => navigate("create-movie")}
+        >
           Thêm phim
         </Button>
-      </Space>
+      </div>
+      <div className="mb-4 flex flex-col sm:flex-row items-center">
+        <AutoComplete
+          style={{ width: 400 }}
+          placeholder="Tìm kiếm phim..."
+          size="large"
+          onSearch={handleSearch}
+          allowClear
+          options={options}
+        />
+      </div>
+
       <Table
         columns={columns}
         dataSource={movies}

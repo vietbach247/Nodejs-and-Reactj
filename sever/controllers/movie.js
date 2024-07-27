@@ -23,8 +23,20 @@ export const createMovie = async (req, res, next) => {
 
 export const getMovies = async (req, res, next) => {
   try {
-    const data = await Movie.find().populate("category").populate("country");
-    return res.status(200).json({ message: "Get movie successfully", data });
+    const { search } = req.query;
+    let movies;
+    if (search) {
+      const regex = new RegExp(search, "i");
+      movies = await Movie.find({ name: regex })
+        .populate("category")
+        .populate("country");
+    } else {
+      movies = await Movie.find().populate("category").populate("country");
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Get movie successfully", data: movies });
   } catch (error) {
     next(error);
   }

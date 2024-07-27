@@ -9,15 +9,19 @@ export const authentication = (req, res, next) => {
       return res.status(401).json({ message: "Vui lòng đăng nhập" });
     }
 
-    jwt.verify(token, "secretKey", (err, decoded) => {
-      if (err) {
-        return res.status(403).json({ message: "Token không hợp lệ" });
-      }
-      req.user = decoded;
-      next();
-    });
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    req.user = decoded; // Lưu thông tin user vào req
+    next();
   } catch (error) {
     console.error("Error in authentication middleware:", error);
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Token không hợp lệ" });
+    } else if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+      });
+    }
     res.status(500).json({ message: "Lỗi máy chủ" });
   }
 };

@@ -55,7 +55,7 @@ const LoginPage: React.FC = () => {
     setFormError(null);
     try {
       const response = await constants.post("/auth/login", data);
-      localStorage.setItem("token", JSON.stringify(response.data));
+      localStorage.setItem("token", response.data.token);
 
       navigate("/");
       window.location.reload();

@@ -261,7 +261,6 @@ export const confirmEmail = async (req, res) => {
       return res.status(400).json({ message: "Xác thực không thành công" });
     }
 
-    // Chỉ cập nhật trạng thái khi không có lỗi
     user.isVerified = true;
     user.verificationToken = undefined;
     await user.save();

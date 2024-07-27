@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import { Category } from "../../interfaces/Category";
 import constants from "../../sever";
+import { MdCategory, MdFeaturedPlayList } from "react-icons/md";
+import { FaHeart } from "react-icons/fa";
+import {
+  SiCoinmarketcap,
+  SiTheboringcompany,
+  SiUnitednations,
+} from "react-icons/si";
 import "./Header.scss"; // Import SCSS file
 import { Country } from "../../interfaces/Country";
 
@@ -50,7 +57,9 @@ const Header: React.FC<Props> = ({ user, handleLogout }) => {
             key="category"
             title={
               <div className="flex items-center text-lg ">
-                <span className="mr-2">Thể loại</span>
+                <span className="mr-2">
+                  Thể loại <MdCategory />
+                </span>
                 <FaChevronDown style={{ fontSize: "12px" }} />
               </div>
             }
@@ -66,7 +75,9 @@ const Header: React.FC<Props> = ({ user, handleLogout }) => {
             key="country"
             title={
               <div className="flex items-center ">
-                <span className="mr-2">Quốc gia</span>
+                <span className="mr-2">
+                  Quốc gia <SiUnitednations />
+                </span>
                 <FaChevronDown style={{ fontSize: "12px" }} />
               </div>
             }
@@ -75,9 +86,20 @@ const Header: React.FC<Props> = ({ user, handleLogout }) => {
               <Menu.Item key={item._id}>{item.name}</Menu.Item>
             ))}
           </Menu.SubMenu>
-          <Menu.Item key="features">Features</Menu.Item>
-          <Menu.Item key="marketplace">Marketplace</Menu.Item>
-          <Menu.Item key="company">Company</Menu.Item>
+          <Menu.Item key="features">
+            Features <MdFeaturedPlayList />
+          </Menu.Item>
+          <Menu.Item key="marketplace">
+            Marketplace <SiCoinmarketcap />
+          </Menu.Item>
+          <Menu.Item key="company">
+            Company <SiTheboringcompany />
+          </Menu.Item>
+          <Link to={"favorite"}>
+            <Menu.Item key="favorites">
+              Yêu thích <FaHeart />
+            </Menu.Item>
+          </Link>
         </Menu>
       </div>
       <div className="flex items-center">
