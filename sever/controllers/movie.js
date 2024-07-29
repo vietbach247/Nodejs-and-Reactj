@@ -23,20 +23,32 @@ export const createMovie = async (req, res, next) => {
 
 export const getMovies = async (req, res, next) => {
   try {
-    const { search } = req.query;
-    let movies;
+    const { search, page = 1, limit = 8, sort = "asc" } = req.query;
+
+    let query = {};
     if (search) {
       const regex = new RegExp(search, "i");
-      movies = await Movie.find({ name: regex })
-        .populate("category")
-        .populate("country");
-    } else {
-      movies = await Movie.find().populate("category").populate("country");
+      query.name = regex;
     }
 
-    return res
-      .status(200)
-      .json({ message: "Get movie successfully", data: movies });
+    const options = {
+      page: parseInt(page, 10),
+      limit: parseInt(limit, 10),
+      populate: ["category", "country"],
+      sort: { price: sort === "asc" ? 1 : -1 },
+    };
+
+    const movies = await Movie.paginate(query, options);
+
+    return res.status(200).json({
+      message: "Get movies successfully",
+      data: movies.docs,
+      pagination: {
+        totalMovies: movies.totalDocs,
+        totalPages: movies.totalPages,
+        currentPage: movies.page,
+      },
+    });
   } catch (error) {
     next(error);
   }

@@ -6,6 +6,8 @@ import crypto from "crypto";
 import { Types } from "mongoose";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import path from "path";
+import cloudinary from "../configs/cloudinaryConfig";
 
 dotenv.config(); // Load biến môi trường từ tệp .env
 
@@ -153,11 +155,72 @@ export const Login = async (req, res, next) => {
 
 export const getProfile = async (req, res, next) => {
   try {
-    const data = await User.findOne(new Types.ObjectId(req.user.userId));
-    if (!data) {
+    const userId = req.user.userId;
+    const user = await User.findById(new Types.ObjectId(userId));
+
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(data);
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createAvatarProfile = async (req, res) => {
+  try {
+    const images = req.files.map((file) => file.path);
+
+    const uploadedImages = [];
+
+    for (const image of images) {
+      const result = await cloudinary.uploader.upload(image);
+
+      uploadedImages.push({
+        publicId: result.public_id,
+        url: result.secure_url,
+      });
+    }
+
+    res.status(200).json({
+      data: uploadedImages,
+      message: "Images uploaded successfully!",
+    });
+  } catch (error) {
+    console.error("Error uploading images:", error);
+    res.status(500).json({
+      message: "Error uploading images.",
+      error: error.message,
+    });
+  }
+};
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const { name, email, phone } = req.body;
+    let avatarUrl;
+
+    if (req.file) {
+      // Upload ảnh lên Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "avatars", // Bạn có thể chỉ định thư mục trong Cloudinary
+      });
+      avatarUrl = result.secure_url;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name, email, phone, avatar: avatarUrl }, // Cập nhật các trường người dùng
+      { new: true } // Trả về tài liệu đã cập nhật
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(updatedUser);
   } catch (error) {
     next(error);
   }

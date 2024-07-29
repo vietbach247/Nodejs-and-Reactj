@@ -1,28 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { Movie } from "../../interfaces/Movie";
 import { Link, useNavigate } from "react-router-dom";
-import constants from "../../sever";
-import { AutoComplete, Button, Space, Table, Tag, notification } from "antd";
+import {
+  AutoComplete,
+  Button,
+  Space,
+  Table,
+  Tag,
+  notification,
+  Pagination,
+} from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Category } from "../../interfaces/Category";
 import { Country } from "../../interfaces/Country";
+import constants from "../../sever";
 
-type Props = {};
-
-const Dashboard = (props: Props) => {
+const Dashboard: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalMovies, setTotalMovies] = useState<number>(0);
+  const [limit] = useState<number>(8);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [options, setOptions] = useState<{ value: string }[]>([]);
+  const navigate = useNavigate();
 
-  // Effect to fetch movies data from API
   useEffect(() => {
-    const fetchMovies = async (query: string = "") => {
+    const fetchMovies = async (
+      search: string = "",
+      page: number = 1,
+      limit: number = 8
+    ) => {
       try {
-        const movieResponse = await constants.get(`/movie${query}`);
-        const movieData = movieResponse.data.data;
+        const query = `?search=${encodeURIComponent(
+          search
+        )}&page=${page}&limit=${limit}`;
+        const response = await constants.get(`/movie${query}`);
+        const movieData = response.data.data;
+        const pagination = response.data.pagination;
+
         if (Array.isArray(movieData)) {
           setMovies(movieData);
+          setTotalMovies(pagination.totalMovies || 0);
         } else {
           console.error(
             "API returned unexpected movie data format:",
@@ -34,11 +52,9 @@ const Dashboard = (props: Props) => {
       }
     };
 
-    const query = searchTerm ? `?search=${encodeURIComponent(searchTerm)}` : "";
-    fetchMovies(query);
-  }, [searchTerm]);
+    fetchMovies(searchTerm, currentPage, limit);
+  }, [searchTerm, currentPage, limit]);
 
-  // Function to handle movie removal
   const handleRemove = async (id: string | undefined) => {
     try {
       if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
@@ -64,7 +80,15 @@ const Dashboard = (props: Props) => {
     }
   };
 
-  // Table columns configuration
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const columns = [
     {
       title: "Tên phim",
@@ -150,22 +174,8 @@ const Dashboard = (props: Props) => {
     },
   ];
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-    if (!value) {
-      setOptions([]);
-      return;
-    }
-
-    // Optional: Update `options` based on search value if needed
-    const filteredOptions = movies
-      .filter((movie) => movie.name.toLowerCase().includes(value.toLowerCase()))
-      .map((movie) => ({ value: movie.name }));
-    setOptions(filteredOptions);
-  };
-
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className="p-4 bg-gray-80 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Danh sách phim</h1>
       <div className="mb-4 flex flex-col sm:flex-row items-center">
         <Button
@@ -191,9 +201,17 @@ const Dashboard = (props: Props) => {
         columns={columns}
         dataSource={movies}
         rowKey="_id"
-        pagination={{ pageSize: 10 }}
+        pagination={false} // Disable internal pagination of the table
         className="bg-white shadow-md rounded-lg overflow-hidden"
       />
+      <div className="mt-6 flex justify-center">
+        <Pagination
+          current={currentPage}
+          pageSize={limit}
+          total={totalMovies}
+          onChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

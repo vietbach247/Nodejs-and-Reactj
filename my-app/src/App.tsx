@@ -14,6 +14,9 @@ import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import MovieForm from "./pages/Dashboard/MovieForm";
 import NotFound from "./pages/NotFound/NotFound";
+import ProFile from "./pages/ProFile/profile";
+import ForgotPassword from "./components/ForgoPassword";
+import ProfilePage from "./pages/UpdateProfilePage";
 
 function App() {
   return (
@@ -29,6 +32,8 @@ function App() {
           />
           <Route path="country/:countryId" element={<ListMovieByCountry />} />
           <Route path="favorite" element={<FavoritesList />} />
+          <Route path="profile" element={<ProFile />} />
+          <Route path="updateProfile" element={<ProfilePage />} />
         </Route>
 
         {/* Routes cho các trang khác */}
@@ -36,6 +41,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/resetPassword/:token" element={<ResetPassword />} />
         <Route path="/confirm-email/:token" element={<ConfirmEmail />} />
+        <Route path="/forgoPassword" element={<ForgotPassword />} />
 
         {/* Routes cho admin */}
         <Route path="/admin" element={<AdminLayout />}>

@@ -8,6 +8,8 @@ const UserSchema = new mongoose.Schema({
   confirmPassword: { type: String, required: true },
   role: { type: String, default: "user" },
   phone: { type: String, required: true },
+  avatar: { type: String },
+
   money: { type: Number, default: 0 },
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },

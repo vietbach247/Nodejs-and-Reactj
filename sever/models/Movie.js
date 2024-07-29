@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const movieSchema = new mongoose.Schema(
   {
@@ -95,6 +96,7 @@ const movieSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+movieSchema.plugin(mongoosePaginate);
 
 const Movie = mongoose.model("Movie", movieSchema);
 

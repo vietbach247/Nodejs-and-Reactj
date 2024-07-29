@@ -5,21 +5,23 @@ import Footer from "../components/Footer/Footer";
 
 type Props = {};
 
-const UserLayout = (props: Props) => {
+const UserLayout: React.FC<Props> = (props: Props) => {
   const [user, setUser] = useState<{ name: string } | null>(null);
 
   const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("login");
+    navigate("/login");
     setUser(null);
   };
 
   return (
     <div>
       <Header user={user} handleLogout={handleLogout} />
-      <Outlet />
+      <div className="m-5 ">
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );
