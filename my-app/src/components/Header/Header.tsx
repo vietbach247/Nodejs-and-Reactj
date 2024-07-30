@@ -42,11 +42,14 @@ const Header: React.FC<Props> = ({ user, handleLogout }) => {
 
   return (
     <div className="flex justify-between items-center p-4 shadow-md bg-white">
-      <img
-        src="https://png.pngtree.com/png-clipart/20200826/original/pngtree-movie-logo-movie-letter-v-png-image_5469427.jpg"
-        alt="Logo"
-        className="h-8 w-auto"
-      />
+      <Link to="">
+        <img
+          src="https://png.pngtree.com/png-clipart/20200826/original/pngtree-movie-logo-movie-letter-v-png-image_5469427.jpg"
+          alt="Logo"
+          className="h-11 w-auto"
+        />
+      </Link>
+
       <div className="flex-grow flex justify-center">
         <Menu
           mode="horizontal"
@@ -106,7 +109,7 @@ const Header: React.FC<Props> = ({ user, handleLogout }) => {
         {token ? (
           <>
             <span className="mr-4 text-black">
-              <Link to="/profile">Chào mừng {user?.name}</Link>
+              <Link to="/profile">Chào mừng </Link>
             </span>
             <button
               onClick={handleLogout}

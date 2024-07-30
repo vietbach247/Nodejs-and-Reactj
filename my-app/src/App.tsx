@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound/NotFound";
 import ProFile from "./pages/ProFile/profile";
 import ForgotPassword from "./components/ForgoPassword";
 import ProfilePage from "./pages/UpdateProfilePage";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function App() {
   return (
@@ -31,9 +32,18 @@ function App() {
             element={<ListMovieByCategory />}
           />
           <Route path="country/:countryId" element={<ListMovieByCountry />} />
-          <Route path="favorite" element={<FavoritesList />} />
-          <Route path="profile" element={<ProFile />} />
-          <Route path="updateProfile" element={<ProfilePage />} />
+          <Route
+            path="favorite"
+            element={<PrivateRoute component={FavoritesList} />}
+          />
+          <Route
+            path="profile"
+            element={<PrivateRoute component={ProFile} />}
+          />
+          <Route
+            path="updateProfile"
+            element={<PrivateRoute component={ProfilePage} />}
+          />
         </Route>
 
         {/* Routes cho các trang khác */}
@@ -44,7 +54,7 @@ function App() {
         <Route path="/forgoPassword" element={<ForgotPassword />} />
 
         {/* Routes cho admin */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={<PrivateRoute component={AdminLayout} />}>
           <Route index element={<Dashboard />} />
           <Route path="create-movie" element={<MovieForm />} />
           <Route path="update-movie/:id" element={<MovieForm />} />

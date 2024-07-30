@@ -228,16 +228,18 @@ export const updateProfile = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
   try {
-    req.session.destroy(function (err) {
+    req.session.destroy((err) => {
       if (err) {
-        console.log(err);
-        return res.status(500).json({ message: "Có lỗi xảy ra khi đăng xuất" });
-      } else {
-        console.log("Session deleted successfully");
-        return res.status(200).json({ message: "Đăng xuất thành công" });
+        console.error("Error destroying session:", err);
+        return res
+          .status(500)
+          .json({ message: "Có lỗi xảy ra khi đăng xuất. Vui lòng thử lại." });
       }
+      console.log("Session deleted successfully");
+      return res.status(200).json({ message: "Đăng xuất thành công." });
     });
   } catch (error) {
+    console.error("Unexpected error:", error);
     next(error);
   }
 };
