@@ -63,7 +63,7 @@ const MovieDetail: React.FC = () => {
       >
         <iframe
           className="absolute top-0 left-0 w-full h-full"
-          src={`https://www.youtube.com/embed/${movie.youtubeId}`}
+          src={`https://player.phimapi.com/player/?url=https://s3.phim1280.tv/20240730/2XvVj865/index.m3u8`}
           title="YouTube video player"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

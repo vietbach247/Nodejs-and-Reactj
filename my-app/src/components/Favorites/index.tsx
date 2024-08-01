@@ -47,9 +47,7 @@ const FavoritesList = () => {
       }
 
       if (
-        window.confirm(
-          "Bạn có chắc chắn muốn xóa phim này khỏi danh sách yêu thích?"
-        )
+        confirm("Bạn có chắc chắn muốn xóa phim này khỏi danh sách yêu thích?")
       ) {
         await constants.delete(`/favorites`, {
           data: { movieId },
@@ -60,7 +58,7 @@ const FavoritesList = () => {
 
         message.success("Đã xóa thành công");
       } else {
-        message.success("Hủy xóa thành công");
+        message.error("Hủy xóa thành công");
       }
     } catch (error) {
       console.error("Error deleting favorite:", error);

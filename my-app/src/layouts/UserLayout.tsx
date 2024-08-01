@@ -12,6 +12,7 @@ const UserLayout: React.FC<Props> = (props: Props) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     navigate("/login");
     setUser(null);
   };

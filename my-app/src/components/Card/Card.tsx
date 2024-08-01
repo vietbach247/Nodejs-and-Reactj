@@ -3,6 +3,7 @@ import { Movie } from "../../interfaces/Movie";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import constants from "../../sever";
+import { Link } from "react-router-dom";
 
 type Props = {
   props: Movie;
@@ -23,7 +24,7 @@ const TCard: FC<Props> = ({ props }) => {
 
       const response = await constants.post(
         "/favorites",
-        { movieId: props._id }, // Gửi movieId cùng với yêu cầu
+        { movieId: props._id },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -45,34 +46,36 @@ const TCard: FC<Props> = ({ props }) => {
 
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden flex flex-col h-full">
-      <img
-        className="w-full h-48 object-cover"
-        src={props.thumb_url}
-        alt={props.name}
-      />
-      <div className="p-4 flex flex-col flex-grow">
-        <h2 className="text-xl font-bold mb-2">{props.name}</h2>
-        <p className="text-gray-600 mb-2">{props.origin_name}</p>
-        <p className="text-gray-800">
-          <strong>Thời gian:</strong> {props.time}
-        </p>
-        <p className="text-gray-800">
-          <strong>Năm:</strong> {props.year}
-        </p>
-        <p className="text-gray-800">
-          <strong>Giá:</strong> ${props.price}
-        </p>
-        <div className="mt-auto">
-          <button
-            className="bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center"
-            onClick={addToFavorites}
-            disabled={loading}
-          >
-            <PlayCircleOutlined className="mr-2" />
-            Thêm vào yêu thích
-          </button>
+      <Link to={`detail/${props._id}`}>
+        <img
+          className="w-full h-48 object-cover"
+          src={props.thumb_url}
+          alt={props.name}
+        />
+        <div className="p-4 flex flex-col flex-grow">
+          <h2 className="text-xl font-bold mb-2">{props.name}</h2>
+          <p className="text-gray-600 mb-2">{props.origin_name}</p>
+          <p className="text-gray-800">
+            <strong>Thời gian:</strong> {props.time}
+          </p>
+          <p className="text-gray-800">
+            <strong>Năm:</strong> {props.year}
+          </p>
+          <p className="text-gray-800">
+            <strong>Giá:</strong> ${props.price}
+          </p>
+          <div className="mt-auto">
+            <button
+              className="bg-blue-500 text-white font-bold py-2 px-4 rounded flex items-center"
+              onClick={addToFavorites}
+              disabled={loading}
+            >
+              <PlayCircleOutlined className="mr-2" />
+              Thêm vào yêu thích
+            </button>
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

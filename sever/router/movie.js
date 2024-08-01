@@ -13,7 +13,7 @@ import { authentication } from "../middleware/authentication";
 const movieRouter = Router();
 
 movieRouter.get("/", getMovies);
-movieRouter.get("/:id", getMovie);
+movieRouter.get("/:id", authentication, getMovie);
 movieRouter.get("/category/:categoryId", getMovieByCategory);
 movieRouter.get("/country/:countryId", getMovieByCountry);
 movieRouter.post("/", createMovie);

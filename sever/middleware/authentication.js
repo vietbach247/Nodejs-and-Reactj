@@ -10,6 +10,11 @@ export const authentication = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (!decoded) {
+      return res
+        .status(401)
+        .json({ message: "Token không h��p lệ", success: false });
+    }
 
     req.user = decoded; // Lưu thông tin user vào req
     next();

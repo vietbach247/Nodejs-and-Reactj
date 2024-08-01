@@ -34,15 +34,27 @@ function App() {
           <Route path="country/:countryId" element={<ListMovieByCountry />} />
           <Route
             path="favorite"
-            element={<PrivateRoute component={FavoritesList} />}
+            element={
+              <PrivateRoute>
+                <FavoritesList />
+              </PrivateRoute>
+            }
           />
           <Route
             path="profile"
-            element={<PrivateRoute component={ProFile} />}
+            element={
+              <PrivateRoute>
+                <ProFile />
+              </PrivateRoute>
+            }
           />
           <Route
             path="updateProfile"
-            element={<PrivateRoute component={ProfilePage} />}
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
           />
         </Route>
 
@@ -54,7 +66,14 @@ function App() {
         <Route path="/forgoPassword" element={<ForgotPassword />} />
 
         {/* Routes cho admin */}
-        <Route path="/admin" element={<PrivateRoute component={AdminLayout} />}>
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute admin>
+              <AdminLayout />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<Dashboard />} />
           <Route path="create-movie" element={<MovieForm />} />
           <Route path="update-movie/:id" element={<MovieForm />} />

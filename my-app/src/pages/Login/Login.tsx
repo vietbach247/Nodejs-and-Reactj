@@ -17,6 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import Joi from "joi";
 import { joiResolver } from "@hookform/resolvers/joi";
 import constants from "../../sever";
+import { useAuth } from "../../contexts/AuthContext";
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -47,6 +48,7 @@ const LoginPage: React.FC = () => {
   });
 
   const navigate = useNavigate();
+  const { login: contextLogin } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -55,10 +57,7 @@ const LoginPage: React.FC = () => {
     setFormError(null);
     try {
       const response = await constants.post("/auth/login", data);
-      localStorage.setItem("token", response.data.token);
-
-      navigate("/");
-      window.location.reload();
+      contextLogin(response.data.token, response.data.data);
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.errors) {
         error.response.data.errors.forEach((err: any) => {

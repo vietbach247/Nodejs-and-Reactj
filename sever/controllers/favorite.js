@@ -53,20 +53,19 @@ export const deleteFavorite = async (req, res, next) => {
 
     if (favorite) {
       if (favorite.movies) {
-        // Kiểm tra movie có tồn tại trong danh sách yêu thích không
         const movieExists = favorite.movies.some(
-          (movie) => movie?.toString() === movieId // Thêm toán tử optional chaining
+          (movie) => movie?.toString() === movieId
         );
 
         if (movieExists) {
           // Xóa movie khỏi danh sách yêu thích
           favorite.movies = favorite.movies.filter(
-            (movie) => movie?.toString() !== movieId // Thêm toán tử optional chaining
+            (movie) => movie?.toString() !== movieId
           );
           favorite = await favorite.save();
           return res.status(200).json({
             message: "Xóa sản phẩm khỏi mục yêu thích thành công",
-            favorite, // Trả về đối tượng favorite đã được cập nhật
+            favorite,
           });
         } else {
           return res

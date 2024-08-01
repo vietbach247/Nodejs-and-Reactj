@@ -1,24 +1,32 @@
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { notification } from "antd";
 
-interface PrivateRouteProps {
-  component: React.ComponentType;
-}
-
-const PrivateRoute: React.FC<PrivateRouteProps> = ({
-  component: Component,
+const PrivateRoute = ({
+  children,
+  admin = false,
+}: {
+  children: JSX.Element;
+  admin?: boolean;
 }) => {
-  const token = localStorage.getItem("token");
+  const { user } = useAuth();
 
-  if (!token) {
+  if (!user) {
     notification.error({
       message: "Vui lòng đăng nhập",
     });
     return <Navigate to="/login" />;
   }
 
-  return <Component />;
+  if (admin && user.role !== "admin") {
+    notification.error({
+      message: "Bạn không có quyền vào trang này",
+    });
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 export default PrivateRoute;
